@@ -1,6 +1,12 @@
+# Build order:
+# -> Dockerfile           | Builds image(s).
+# -> docker-compose.yml   | Starts services/networks using the built image(s).
+
+# In docker-compose.yml, `build: ./` tells the `tma-cah` service to use this Dockerfile.
+
 FROM davidcaste/alpine-tomcat:jdk8tomcat7
 
-# MAVEN
+## MAVEN ##
 ENV MAVEN_VERSION 3.5.4
 ENV USER_HOME_DIR /root
 ENV SHA ce50b1c91364cb77efe3776f756a6d92b76d9038b0a0782f7d53acf1e997a14d
@@ -16,19 +22,25 @@ RUN apk add --no-cache curl tar procps \
  && rm -f /tmp/apache-maven.tar.gz \
  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
-# PYX
-ADD scripts/default.sh scripts/overrides.sh /
+## PYX ##
+# Add script files to `/`
+ADD scripts/default.sh scripts/overrides.sh scripts/tmacah.sh /
 ENV GIT_BRANCH master
 
 RUN apk add dos2unix git --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted \
-  && dos2unix /default.sh /overrides.sh \
+  && dos2unix /default.sh /overrides.sh /tmacah.sh \
   && git clone -b $GIT_BRANCH https://github.com/xram64/CustomCAH.git /project \
   && apk del dos2unix git \
-  && chmod +x /default.sh /overrides.sh \
+  && chmod +x /default.sh /overrides.sh /tmacah.sh \
   && mkdir /overrides
 
+# Add Docker settings file to `/usr/share/maven/ref/`
 ADD ./overrides/settings-docker.xml /usr/share/maven/ref/
+
 VOLUME [ "/overrides" ]
 
+# Move into the CustomCAH repo files downloaded to `/project`.
 WORKDIR /project
-CMD [ "/default.sh" ]
+
+# Run the build script.
+CMD [ "/tmacah.sh" ]

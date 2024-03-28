@@ -2,42 +2,35 @@ version: "3.7"
 
 services:
 
-  pyx:
+  tma-cah:
     image: emcniece/dockeryourxyzzy:latest
     build: ./
     ports:
-     - "8080:8080"
+     - "6969:8080"
     volumes:
       - ./overrides:/overrides
+      - ./init-db.d:/docker-entrypoint-initdb.d  # Used to transfer `cah_cards.sql` from `tma-cah` container (where CustomCAH repo is cloned) into `postgres` container.
     networks:
-      - pyx-net
+      - tma-cah-net
     environment:
-      - TOMCAT_USER=tomcat_user
-      - TOMCAT_PASSWORD=tomcat_password
-      - DB_NAME=pyx
-      - DB_USER=pyx
-      - DB_PASSWORD=CorrectHorseBatteryStaple
+      - TOMCAT_USER=${TOMCAT_USER}
+      - TOMCAT_PASSWORD=${TOMCAT_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
 
   postgres:
     image: "postgres:alpine"
     volumes:
       - ./data/pgdata:/var/lib/postgresql/data
+      - ./overrides:/overrides
       - ./init-db.d:/docker-entrypoint-initdb.d
     networks:
-      - pyx-net
+      - tma-cah-net
     environment:
-      - POSTGRES_DB=pyx
-      - POSTGRES_USER=pyx
-      - POSTGRES_PASSWORD=CorrectHorseBatteryStaple
-
-  ngrok:
-    image: wernight/ngrok:latest
-    networks:
-      - pyx-net
-    ports:
-      - "4040:4040"
-    environment:
-      - NGROK_PORT=pyx:8080
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
 networks:
-  pyx-net:
+  tma-cah-net:
