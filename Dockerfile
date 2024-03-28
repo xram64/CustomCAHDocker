@@ -7,9 +7,9 @@
 FROM davidcaste/alpine-tomcat:jdk8tomcat7
 
 ## MAVEN ##
-ENV MAVEN_VERSION 3.5.4
+ENV MAVEN_VERSION 3.9.6
 ENV USER_HOME_DIR /root
-ENV SHA ce50b1c91364cb77efe3776f756a6d92b76d9038b0a0782f7d53acf1e997a14d
+ENV SHA 6eedd2cae3626d6ad3a5c9ee324bd265853d64297f07f033430755bd0e0c3a4b
 ENV BASE_URL https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
@@ -27,7 +27,7 @@ RUN apk add --no-cache curl tar procps \
 ADD scripts/default.sh scripts/overrides.sh scripts/tmacah.sh /
 ENV GIT_BRANCH master
 
-RUN apk add dos2unix git --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted \
+RUN apk add dos2unix git --no-cache --repository http://dl-3.alpinelinux.org/alpine/v3.9/community/ --allow-untrusted \
   && dos2unix /default.sh /overrides.sh /tmacah.sh \
   && git clone -b $GIT_BRANCH https://github.com/xram64/CustomCAH.git /project \
   && apk del dos2unix git \
