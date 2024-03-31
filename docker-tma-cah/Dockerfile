@@ -1,8 +1,4 @@
-# Build order:
-# -> Dockerfile           | Builds image(s).
-# -> docker-compose.yml   | Starts services/networks using the built image(s).
-
-# In docker-compose.yml, `build: ./` tells the `tma-cah` service to use this Dockerfile.
+# Dockerfile for `tma-cah` service of CustomCAHDocker.
 
 FROM davidcaste/alpine-tomcat:jdk8tomcat7
 
@@ -24,14 +20,16 @@ RUN apk add --no-cache curl tar procps \
 
 ## PYX ##
 # Add script files to `/`
-ADD scripts/default.sh scripts/overrides.sh scripts/tmacah.sh /
+ADD scripts/default.sh scripts/overrides.sh /
+ADD docker-tma-cah/tma-cah.sh /
+
 ENV GIT_BRANCH master
 
 RUN apk add dos2unix git --no-cache --repository http://dl-3.alpinelinux.org/alpine/v3.9/community/ --allow-untrusted \
-  && dos2unix /default.sh /overrides.sh /tmacah.sh \
+  && dos2unix /default.sh /overrides.sh /tma-cah.sh \
   && git clone -b $GIT_BRANCH https://github.com/xram64/CustomCAH.git /project \
   && apk del dos2unix git \
-  && chmod +x /default.sh /overrides.sh /tmacah.sh \
+  && chmod +x /default.sh /overrides.sh /tma-cah.sh \
   && mkdir /overrides
 
 # Add Docker settings file to `/usr/share/maven/ref/`
@@ -43,4 +41,4 @@ VOLUME [ "/overrides" ]
 WORKDIR /project
 
 # Run the build script.
-CMD [ "/tmacah.sh" ]
+CMD [ "/tma-cah.sh" ]

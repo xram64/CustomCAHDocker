@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# This script is run in the container at build time, starting in the `/project` directory.
+# This script is run in the `tma-cah` container at build time, starting in the `/project` directory.
 
 set -e
-echo "Using build.properties overrides"
+echo "[tma-cah.sh] Importing live copy of \`cah_cards.sql\` into \`/docker-entrypoint-initdb.d\`."
 
 # Copy SQL dump file from the CustomCAH repo into the shared mount point (defined in Dockerfile) to make it accessible to the `postgres` container
 cp -f /project/cah_cards.sql /docker-entrypoint-initdb.d/
+
+
+echo "[tma-cah.sh] Building project with Maven. Using \`build.properties\` and \`secure.properties\` overrides."
 
 # Copy overides (if one of these `overrides` files is missing, fallback to loading `build.properties.example` only)
 cat build.properties.example /overrides/build.properties /overrides/secure.properties > build.properties  2>/dev/null || cp build.properties.example build.properties

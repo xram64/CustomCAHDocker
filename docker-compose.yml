@@ -4,9 +4,11 @@ services:
 
   tma-cah:
     image: emcniece/dockeryourxyzzy:latest
-    build: ./
+    build:
+      context: .
+      dockerfile: ./docker-tma-cah/Dockerfile
     ports:
-     - "6969:8080"
+      - "6969:8080"
     volumes:
       - ./overrides:/overrides
       - ./init-db.d:/docker-entrypoint-initdb.d  # Used to transfer `cah_cards.sql` from `tma-cah` container (where CustomCAH repo is cloned) into `postgres` container.
@@ -21,8 +23,11 @@ services:
 
   postgres:
     image: "postgres:alpine"
+    build:
+      context: .
+      dockerfile: ./docker-postgres/Dockerfile
     volumes:
-      - ./data/pgdata:/var/lib/postgresql/data
+      - ./data/pgdata:/var/lib/postgresql/data  # Persistent database storage
       - ./overrides:/overrides
       - ./init-db.d:/docker-entrypoint-initdb.d
     networks:
