@@ -2,6 +2,8 @@
 
 FROM davidcaste/alpine-tomcat:jdk8tomcat7
 
+LABEL xram.tma.cah="tma-cah"
+
 ## MAVEN ##
 ENV MAVEN_VERSION 3.9.6
 ENV USER_HOME_DIR /root

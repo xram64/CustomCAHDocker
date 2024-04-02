@@ -28,5 +28,7 @@ docker compose down
 # Prune build cache if `-u` is provided.
 if [ "$DO_UPDATE" = true ]; then
     echo "[Pruning build cache...]"
-    docker builder prune -a -f
+    docker builder prune -a -f --filter "label=xram.tma.cah"
+    echo "[Pruning images...]"
+    docker image prune -a -f --filter "label=xram.tma.cah"
 fi
