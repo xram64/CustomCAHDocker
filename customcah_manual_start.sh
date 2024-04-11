@@ -1,6 +1,6 @@
 #!/bin/bash
 # Start the Docker containers for CustomCAH.
-# xram | 3/28/24
+# xram | 3/28/24 | v1.0 (4/11/24)
 
 HELP_TEXT='Starts Docker containers for CustomCAH.\n'
 HELP_TEXT+='Options:\n'
