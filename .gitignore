@@ -2,4 +2,5 @@ output/
 .pyx/
 .pgdata/
 .env
+.dev
 overrides/secure.properties
